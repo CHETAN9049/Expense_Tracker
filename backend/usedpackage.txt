@@ -1,0 +1,23 @@
+npm init -y
+
+npm i express
+
+npm i dotenv
+
+npm i bcrypt
+
+npm i jsonwebtoken
+
+npm i express-rate-limit
+
+npm i cors
+
+npm install nodemon --save-dev
+
+npm install mongodb
+
+npm install mongoose
+
+
+
+        npm run server  --for running

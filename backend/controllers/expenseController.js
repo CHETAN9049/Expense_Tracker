@@ -23,10 +23,7 @@ exports.getExpenses = async (req, res) => {
         const { page = 1, limit = 5, sortBy = "date", order = "desc" } = req.query;
         const { userId } = req.params;
 
-        const expenses = await Expense.find({ userId })
-            .sort({ [sortBy]: order === "asc" ? 1 : -1 })
-            .skip((page - 1) * limit)
-            .limit(Number(limit));
+        const expenses = await Expense.find({ userId }).sort({ [sortBy]: order === "asc" ? 1 : -1 }).skip((page - 1) * limit).limit(Number(limit));
 
         const count = await Expense.countDocuments({ userId });
 

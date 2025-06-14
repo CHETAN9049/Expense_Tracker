@@ -3,7 +3,8 @@ const User = require("../models/User");
 
 exports.addExpense = async (req, res) => {
     try {
-        const { userId, amount, date, category, note } = req.body;
+        const userId = req.user;
+        const { amount, date, category, note } = req.body;
         const expense = new Expense({ userId, amount, date, category, note });
         await expense.save();
 
@@ -37,15 +38,20 @@ exports.getExpenses = async (req, res) => {
 exports.editExpense = async (req, res) => {
     try {
         const { id } = req.params;
-        const { amount, date, category, note } = req.body;
+        const updateFields = req.body;
 
         const old = await Expense.findById(id);
+        if (!old) return res.status(404).send({ error: "Expense not found" });
+
         const user = await User.findById(old.userId);
 
-        user.balance += old.amount;
-        user.balance -= amount;
+        // Adjust balance only if amount is being updated
+        if (updateFields.amount !== undefined) {
+            user.balance += old.amount;
+            user.balance -= updateFields.amount;
+        }
 
-        await Expense.findByIdAndUpdate(id, { amount, date, category, note });
+        await Expense.findByIdAndUpdate(id, updateFields, { new: true });
         await user.save();
 
         return res.status(200).send({ message: "Expense updated", balance: user.balance });

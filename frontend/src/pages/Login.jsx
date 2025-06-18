@@ -10,7 +10,7 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    background: "#f4f6f9",
+    background: 'url("https://wallpaperaccess.com/full/333615.jpg")',
   },
   card: {
     width: "100%",
@@ -36,6 +36,7 @@ const styles = {
     width: "100%",
     marginBottom: "10px",
     backgroundColor: "#0147AB",
+    color: '#fff',
     border: "none",
   },
   message: {
@@ -111,12 +112,11 @@ function Login() {
 
           {message && <div style={styles.message}>{message}</div>}
         </form>
-
-        <Link style={styles.Text} >Don't have an account?</Link>
     
-        <Link to="/Signup" >
-          Register
+        <Link to="/signup">
+         Don't have an account? SignUp
         </Link>
+
       </div>
     </div>
   );

@@ -1,6 +1,52 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const speakeasy = require("speakeasy");
+
+exports.setup2FA = async (req, res) => {
+    try{
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).send({ error: "User not found" });
+
+        const secret = speakeasy.generateSecret({ length: 20 });
+        user.twoFactorSecret = secret.base32;
+        await user.save();
+
+        const token = speakeasy.totp({
+            secret: user.twoFactorSecret,
+            encoding: 'base32',
+            step: 30, 
+        });
+        console.log(`two factor authentication code for ${user.email}: ${token}`);
+        return res.status(200).send({message: "2FA setup successful", secret: user.twoFactorSecret, token });
+    } 
+    catch(error){
+        console.error('Error setting up 2FA:', error.message);
+        return res.status(400).send({ error: 'Error setting up 2FA' });
+    }
+}
+
+exports.verify2FA = async (req, res) => {
+    try {
+        const { token } = req.body;
+        const user = await User.findById(req.user.id);
+        if (!user || !user.twoFactorSecret) return res.status(404).send({ error: "User not found or 2FA not set up" });
+
+        const isValid = speakeasy.totp.verify({
+            secret: user.twoFactorSecret,
+            encoding: 'base32',
+            token,
+            window: 2, 
+        });
+
+        if (!isValid) return res.status(401).send({ error: "Invalid 2FA token" });
+
+        return res.status(200).send({ message: "2FA verification successful" });
+    } catch (error) {
+        console.error('Error verifying 2FA:', error.message);
+        return res.status(400).send({ error: 'Error verifying 2FA' });
+    }
+}
 
 exports.register = async (req, res) => {
     try {

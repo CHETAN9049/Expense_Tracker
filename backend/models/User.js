@@ -32,6 +32,13 @@ const userSchema = new mongoose.Schema({
     categoryLimits: {
         type: Map,
         of: Number,
+    },
+    twoFactorEnabled: {
+        type: String,
+        default: false,
+    },
+    twoFactorSecret: {
+        type: String,
     }
 });
 

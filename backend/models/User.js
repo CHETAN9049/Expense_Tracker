@@ -17,6 +17,16 @@ const userSchema = new mongoose.Schema({
     balance: {
         type: Number,
     },
+    monthlySalary: {
+        type: Number,
+    },
+    categories: [
+        {
+            name: String,
+            limit: Number,
+            spent: Number,
+        }
+    ],
     createdAt: {
         type: Date,
         default: new Date(),

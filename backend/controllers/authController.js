@@ -69,7 +69,7 @@ exports.register = async (req, res) => {
 
 exports.completeProfile = async (req, res) => {
     try {
-        const userId = req.user._id; // assuming authentication middleware sets req.user
+        const userId = req.user.id; // took it from req.user which is set by the auth middleware
         const { initialBalance, monthlySalary, customCategories = [], categoryLimits = {} } = req.body;
 
         const user = await User.findById(userId);

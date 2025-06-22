@@ -5,10 +5,33 @@ exports.addExpense = async (req, res) => {
     try {
         const userId = req.user;
         const { amount, date, category, note } = req.body;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).send({ error: "User not found" });
+        }
+
+        if (amount > user.balance) {
+            return res.status(400).send({ error: "Insufficient balance" });
+        }
+
+        // Update category spending if categories exist
+        if (user.categories && user.categories.length > 0) {
+            const cat = user.categories.find(c => c.name === category);
+            if (!cat) {
+                return res.status(400).send({ error: "Category not found" });
+            }
+            cat.spent += amount;
+            if (cat.spent > cat.limit) {
+                // Optionally, you can send a warning in the response
+                // or handle as needed for your business logic
+            }
+        }
+
+        // Create expense record
         const expense = new Expense({ userId, amount, date, category, note });
         await expense.save();
 
-        const user = await User.findById(userId);
         user.balance -= amount;
         await user.save();
 

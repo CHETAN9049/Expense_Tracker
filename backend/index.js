@@ -1,27 +1,35 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
-require('./salaryCron');
-
-const authRoutes = require("./routes/authRoutes");
-const expenseRoutes = require("./routes/expenseRoutes");
-const { authLimiter } = require("./middlewares/rateLimiter");
-const mongoConnection = require("./config/mongodb");
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const mongoConnection = require('./config/mongodb');
+const authRouter = require('./routes/authRoutes');
+const expenseRouter = require('./routes/expenseRoutes');
+const userRouter = require('./routes/userRoutes');
+const adminRouter = require('./routes/adminRoutes');
+const { authLimiter } = require('./middlewares/rateLimiter');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
 app.use(express.json());
+app.use(cors({ origin: '*' }));
 
-// Rate Limiter Middleware
+// Rate limiter for auth routes
 app.use(authLimiter);
 
-// Routes
-app.use("/auth", authRoutes);
-app.use("/expenses", expenseRoutes);
+// Routers
+app.use('/auth', authRouter);
+app.use('/expenses', expenseRouter);
+app.use('/user', userRouter);
+app.use('/admin', adminRouter);
 
-// DB Connection
+app.get('/', (req, res) => {
+    return res.status(200).send({ message: 'Server is successfully running' });
+});
+
+// Connect to DB
 mongoConnection();
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

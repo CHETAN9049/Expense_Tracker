@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema({
     },
     twoFactorSecret: {
         type: String,
+    },
+    emailAlerts: { 
+        type: Boolean, 
+        default: false 
     }
 });
 

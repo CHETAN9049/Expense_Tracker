@@ -3,11 +3,6 @@ const expenseController = require('../controllers/expenseController');
 const auth = require('../middlewares/authMiddleware');
 const roleCheck = require('../middlewares/roleMiddleware');
 
-// Admin-only route
-expenseRouter.get('/admin/report', auth.authenticate, roleCheck.requiredRole(['admin']), (req, res) => {
-    res.send({ message: "This is a protected admin report" });
-});
-
 expenseRouter.post('/add', auth.authenticate, expenseController.addExpense);
 
 expenseRouter.get('/:userId', auth.authenticate, expenseController.getExpenses);

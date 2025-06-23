@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-
 const Dashboard = () => {
   const [sections, setSections] = useState(['General'])
   const [expenses, setExpenses] = useState([])

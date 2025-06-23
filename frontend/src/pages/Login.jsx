@@ -5,12 +5,14 @@ import "./Login.css";
 
 
 const styles = {
-  page: {
+page: {
     minHeight: "100vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     background: 'url("https://wallpaperaccess.com/full/333615.jpg")',
+    backgroundSize: "cover",
+    backgroundPosition: "center",
   },
   card: {
     width: "100%",
@@ -30,14 +32,23 @@ const styles = {
     color: "#34495e",
   },
   input: {
-    marginBottom: "15px",
+  marginBottom: "15px",
+  padding: "10px",
+  borderRadius: "5px",
+  border: "1px solid #ccc",
+  width: "100%",
+  boxSizing: "border-box"
   },
   button: {
-    width: "100%",
-    marginBottom: "10px",
-    backgroundColor: "#0147AB",
-    color: '#fff',
-    border: "none",
+  borderRadius: "5px",
+  width: '40%',          
+  margin: '10px auto',    
+  display: 'block',
+  backgroundColor: '#0147AB',
+  border: 'none',
+  padding: '10px',
+  fontSize: '16px',
+  color: '#fff',
   },
   message: {
     marginTop: "10px",

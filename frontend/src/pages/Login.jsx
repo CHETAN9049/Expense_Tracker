@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import "./Login.css"; 
+import "./Login.css";
 
 const styles = {
   page: {
@@ -70,14 +70,15 @@ function Login() {
     }
 
     try {
-      const res = await axios.post("https://hos-backend.onrender.com/login", { email, password });
-      if (res.data.success && res.data.token) {
-        localStorage.setItem("authToken", res.data.token);
-        navigate("/verify-2fa"); 
+      const res = await axios.post("https://your-api-url.com/login", { email, password });
+
+      if (res.data.token) {
+        localStorage.setItem("user", JSON.stringify({ token: res.data.token }));
+        navigate("/verify-2fa"); // or "/dashboard" if no 2FA
       } else {
         setMessage("Invalid credentials");
       }
-    } catch (err) {
+    } catch (error) {
       setMessage("Login failed. Please try again.");
     }
   };
@@ -117,7 +118,8 @@ function Login() {
 
           {message && <div style={styles.message}>{message}</div>}
         </form>
-        <Link to="/signup">Don't have an account? Sign Up</Link>
+
+        <Link to="/signup">Don't have an account? SignUp</Link>
       </div>
     </div>
   );

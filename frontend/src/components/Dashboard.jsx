@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import NavigationBar from './NavigationBar.jsx'
-
 const Dashboard = () => {
   const [sections, setSections] = useState(['General'])
   const [expenses, setExpenses] = useState([])

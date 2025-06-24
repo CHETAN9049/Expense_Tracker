@@ -16,7 +16,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '20px',
+    marginBottom: '40px',
   },
   title: {
     fontSize: '28px',
@@ -32,6 +32,14 @@ const styles = {
     cursor: 'pointer',
     fontWeight: '600',
   },
+ buttonContainer: {
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-around',   
+  alignItems: 'center',
+  width: '100%',                  
+  marginTop: '40px',
+},
   button: {
     padding: '10px 20px',
     fontSize: '16px',
@@ -41,7 +49,7 @@ const styles = {
     border: 'none',
     borderRadius: '8px',
     cursor: 'pointer',
-    marginBottom: '20px',
+    width: '200px', 
   },
 };
 
@@ -59,6 +67,14 @@ function AdminDashboard() {
     navigate('/view-users');
   };
 
+  const handleEdit = () => {
+    navigate('/edit-user');
+  };
+
+  const handleDelete = () => {
+    navigate('/delete-user');
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.header}>
@@ -66,7 +82,11 @@ function AdminDashboard() {
         <button style={styles.logoutButton} onClick={handleLogout}>Logout</button>
       </div>
 
-      <button style={styles.button} onClick={handleViewUsers}>View Users</button>
+      <div style={styles.buttonContainer}>
+        <button style={styles.button} onClick={handleViewUsers}>View Users</button>
+        <button style={styles.button} onClick={handleEdit}>Edit Users</button>
+        <button style={styles.button} onClick={handleDelete}>Delete Users</button>
+      </div>
     </div>
   );
 }

@@ -32,26 +32,22 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post("https://hos-backend.onrender.com/register", {
+      const res = await axios.post("https://hos-backend.onrender.com/register", {
         name,
         email,
         password,
       });
 
-      if (response.data === "Account already exists") {
+      if (res.data.success && res.data.token) {
+        localStorage.setItem("authToken", res.data.token);
+        navigate("/verify-2fa"); 
+      } else if (res.data === "Account already exists") {
         setErrorMessage("Account already exists. Please use a different email.");
       } else {
-        alert("Registered successfully");
-        navigate("/login");
+        setErrorMessage("Registration failed. Please try again.");
       }
     } catch (error) {
-      if (error.response) {
-        setErrorMessage("Registration failed. Please try again.");
-      } else if (error.request) {
-        setErrorMessage("Network error. Please check your connection.");
-      } else {
-        setErrorMessage("Registration failed. Please try again.");
-      }
+      setErrorMessage("Registration failed. Please try again.");
     }
   };
 
@@ -61,7 +57,6 @@ function Signup() {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-     
     },
     card: {
       width: "100%",
@@ -79,33 +74,30 @@ function Signup() {
       fontWeight: "bold",
       color: "#34495e",
     },
-   input: {
-  marginBottom: "15px",
-  padding: "10px",
-  borderRadius: "5px",
-  border: "1px solid #ccc",
-  width: "100%",
-  boxSizing: "border-box"
-},
-  button: {
-  
-  borderRadius: "5px",
-   width: '40%',          
-  margin: '10px auto',    
-  display: 'block',
-  backgroundColor: '#0147AB',
-  border: 'none',
-  padding: '10px',
-  fontSize: '16px',
-  color: '#fff',
-},
-
+    input: {
+      marginBottom: "15px",
+      padding: "10px",
+      borderRadius: "5px",
+      border: "1px solid #ccc",
+      width: "100%",
+      boxSizing: "border-box",
+    },
+    button: {
+      borderRadius: "5px",
+      width: "40%",
+      margin: "10px auto",
+      display: "block",
+      backgroundColor: "#0147AB",
+      border: "none",
+      padding: "10px",
+      fontSize: "16px",
+      color: "#fff",
+    },
     message: {
       marginTop: "10px",
       color: "red",
       textAlign: "center",
     },
-  
   };
 
   return (
@@ -153,10 +145,7 @@ function Signup() {
 
           {message && <div style={styles.message}>{message}</div>}
         </form>
-
-        <Link to="/login">
-          Already Have an Account? Login
-        </Link>
+        <Link to="/login">Already Have an Account? Login</Link>
       </div>
     </div>
   );

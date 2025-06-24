@@ -24,7 +24,7 @@ const NavigationBar = () => {
 
   return (
     <div style={styles.navBar}>
-      <button style={styles.navBtn} onClick={() => navigate('/')}>Profile</button>
+      <button style={styles.navBtn} onClick={() => navigate('/profilepage')}>Profile</button>
       <button style={styles.navBtn} onClick={() => navigate('/dashboard')}>Dashboard</button>
       <button style={styles.navBtn} onClick={() => navigate('/history')}>History</button>
     </div>

@@ -53,6 +53,12 @@ const userSchema = new mongoose.Schema({
     emailAlerts: { 
         type: Boolean, 
         default: false 
+    },
+    email2FACode: { 
+        type: String 
+    },
+    email2FACodeExpires: {
+         type: Date 
     }
 });
 

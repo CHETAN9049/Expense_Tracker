@@ -3,9 +3,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css"; 
 
-
 const styles = {
-page: {
+  page: {
     minHeight: "100vh",
     display: "flex",
     justifyContent: "center",
@@ -20,7 +19,6 @@ page: {
     padding: "30px",
     background: "#fff",
     borderRadius: "10px",
-    
   },
   title: {
     textAlign: "center",
@@ -32,32 +30,28 @@ page: {
     color: "#34495e",
   },
   input: {
-  marginBottom: "15px",
-  padding: "10px",
-  borderRadius: "5px",
-  border: "1px solid #ccc",
-  width: "100%",
-  boxSizing: "border-box"
+    marginBottom: "15px",
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    width: "100%",
+    boxSizing: "border-box",
   },
   button: {
-  borderRadius: "5px",
-  width: '40%',          
-  margin: '10px auto',    
-  display: 'block',
-  backgroundColor: '#0147AB',
-  border: 'none',
-  padding: '10px',
-  fontSize: '16px',
-  color: '#fff',
+    borderRadius: "5px",
+    width: "40%",
+    margin: "10px auto",
+    display: "block",
+    backgroundColor: "#0147AB",
+    border: "none",
+    padding: "10px",
+    fontSize: "16px",
+    color: "#fff",
   },
   message: {
     marginTop: "10px",
     color: "red",
     textAlign: "center",
-  },
-  Text: {
-    textAlign: "center",
-    marginTop: "10px",
   },
 };
 
@@ -67,7 +61,7 @@ function Login() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -75,17 +69,17 @@ function Login() {
       return;
     }
 
-    axios
-      .post("https://your-api-url.com/login", { email, password }) // replce with api endpoint
-      .then((res) => {
-        if (res.data === "Success") {
-          localStorage.setItem("isAuthenticated", "true");
-          navigate("/dashboard"); 
-        } else {
-          setMessage("Invalid credentials");
-        }
-      })
-      .catch(() => setMessage("Login failed. Please try again."));
+    try {
+      const res = await axios.post("https://hos-backend.onrender.com/login", { email, password });
+      if (res.data.success && res.data.token) {
+        localStorage.setItem("authToken", res.data.token);
+        navigate("/verify-2fa"); 
+      } else {
+        setMessage("Invalid credentials");
+      }
+    } catch (err) {
+      setMessage("Login failed. Please try again.");
+    }
   };
 
   return (
@@ -123,15 +117,10 @@ function Login() {
 
           {message && <div style={styles.message}>{message}</div>}
         </form>
-    
-        <Link to="/signup">
-         Don't have an account? SignUp
-        </Link>
-
+        <Link to="/signup">Don't have an account? Sign Up</Link>
       </div>
     </div>
   );
 }
 
 export default Login;
-

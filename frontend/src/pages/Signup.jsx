@@ -32,22 +32,27 @@ function Signup() {
     }
 
     try {
-      const res = await axios.post("https://hos-backend.onrender.com/register", {
+      const response = await axios.post("https://hos-backend.onrender.com/register", {
         name,
         email,
         password,
       });
 
-      if (res.data.success && res.data.token) {
-        localStorage.setItem("authToken", res.data.token);
-        navigate("/verify-2fa"); 
-      } else if (res.data === "Account already exists") {
-        setErrorMessage("Account already exists. Please use a different email.");
+      if (response.data.token) {
+        localStorage.setItem("user", JSON.stringify({ token: response.data.token }));
+        navigate("/dashboard");
+      } else {
+        alert("Registered successfully");
+        navigate("/login");
+      }
+    } catch (error) {
+      if (error.response) {
+        setErrorMessage("Registration failed. Please try again.");
+      } else if (error.request) {
+        setErrorMessage("Network error. Please check your connection.");
       } else {
         setErrorMessage("Registration failed. Please try again.");
       }
-    } catch (error) {
-      setErrorMessage("Registration failed. Please try again.");
     }
   };
 
@@ -145,6 +150,7 @@ function Signup() {
 
           {message && <div style={styles.message}>{message}</div>}
         </form>
+
         <Link to="/login">Already Have an Account? Login</Link>
       </div>
     </div>

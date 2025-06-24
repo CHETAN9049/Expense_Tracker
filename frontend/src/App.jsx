@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import ViewUsers from './pages/ViewUsers';
+import Verify2FA from './pages/Verify2FA';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/addashboard" element={<AdminDashboard />} />
       <Route path="/view-users" element={<ViewUsers />} />
+      <Route path="/verify-2fa" element={<Verify2FA/>}/>
     </Routes>
   );
 }

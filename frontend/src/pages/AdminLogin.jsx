@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./Login.css"; // You can reuse the same CSS
+import "./Login.css"; 
 
 const styles = {
   page: {

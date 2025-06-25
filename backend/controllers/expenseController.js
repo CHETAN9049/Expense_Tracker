@@ -1,5 +1,14 @@
 const Expense = require("../models/Expense");
 const User = require("../models/User");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+}); 
 
 exports.addExpense = async (req, res) => {
     try {
@@ -15,7 +24,6 @@ exports.addExpense = async (req, res) => {
             return res.status(400).send({ error: "Insufficient balance" });
         }
 
-        // Update category spending if categories exist
         if (user.categories && user.categories.length > 0) {
             const cat = user.categories.find(c => c.name === category);
             if (!cat) {
@@ -23,12 +31,14 @@ exports.addExpense = async (req, res) => {
             }
             cat.spent += amount;
             if (cat.spent > cat.limit) {
-                // Optionally, you can send a warning in the response
-                // or handle as needed for your business logic
+                await transporter.sendMail({
+                    from: process.env.EMAIL_USER,
+                    to: user.email,
+                    subject: `Spending Limit Exceeded: ${category}`,
+                    text: `Hi ${user.username},\n\nYou have exceeded your monthly spending limit for the category "${category}".\n\nLimit: ₹${cat.limit}\nSpent: ₹${cat.spent}\n\nPlease review your expenses.\n\n- Expense Tracker`
+                });
             }
         }
-
-        // Create expense record
         const expense = new Expense({ userId, amount, date, category, note });
         await expense.save();
 
@@ -68,7 +78,6 @@ exports.editExpense = async (req, res) => {
 
         const user = await User.findById(old.userId);
 
-        // Adjust balance only if amount is being updated
         if (updateFields.amount !== undefined) {
             user.balance += old.amount;
             user.balance -= updateFields.amount;

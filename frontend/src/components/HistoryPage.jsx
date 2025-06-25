@@ -13,6 +13,12 @@ const HistoryPage = () => {
     setExpenses(data)
   }, [])
 
+  const handleDelete = (id) => {
+    const updated = expenses.filter(e => e.id !== id)
+    setExpenses(updated)
+    localStorage.setItem('expenses', JSON.stringify(updated))
+  }
+
   const filtered = expenses.filter(e => {
     const matchesMonth = month ? new Date(e.date).getMonth() + 1 === parseInt(month) : true
     const matchesCat = category ? e.section === category : true
@@ -58,6 +64,14 @@ const HistoryPage = () => {
       border: 'none',
       borderRadius: '5px',
       cursor: 'pointer'
+    },
+    deleteBtn: {
+      padding: '0.3rem 0.6rem',
+      backgroundColor: '#cc0000',
+      color: 'white',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer'
     }
   }
 
@@ -70,12 +84,16 @@ const HistoryPage = () => {
         <select value={month} onChange={e => setMonth(e.target.value)}>
           <option value="">All Months</option>
           {[...Array(12).keys()].map(m => (
-            <option key={m+1} value={m+1}>{new Date(0, m).toLocaleString('default', { month: 'long' })}</option>
+            <option key={m + 1} value={m + 1}>
+              {new Date(0, m).toLocaleString('default', { month: 'long' })}
+            </option>
           ))}
         </select>
         <select value={category} onChange={e => setCategory(e.target.value)}>
           <option value="">All Categories</option>
-          {allSections.map(s => <option key={s}>{s}</option>)}
+          {allSections.map(s => (
+            <option key={s}>{s}</option>
+          ))}
         </select>
       </div>
 
@@ -88,6 +106,7 @@ const HistoryPage = () => {
             <th style={styles.th}>Section</th>
             <th style={styles.th}>Notes</th>
             <th style={styles.th}>Edit</th>
+            <th style={styles.th}>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -98,11 +117,17 @@ const HistoryPage = () => {
               <td style={styles.td}>{e.date}</td>
               <td style={styles.td}>{e.section}</td>
               <td style={styles.td}>{e.notes}</td>
-              <td style={styles.td}><button style={styles.btn} onClick={() => navigate('/dashboard')}>Edit</button></td>
+              <td style={styles.td}>
+                <button style={styles.btn} onClick={() => navigate('/dashboard')}>Edit</button>
+              </td>
+              <td style={styles.td}>
+                <button style={styles.deleteBtn} onClick={() => handleDelete(e.id)}>Delete</button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
       <NavigationBar />
     </div>
   )

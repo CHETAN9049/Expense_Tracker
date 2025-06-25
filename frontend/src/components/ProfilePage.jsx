@@ -8,6 +8,10 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [tempName, setTempName] = useState(userName)
   const [balance, setBalance] = useState(5000)
+  const [salary, setSalary] = useState(20000)
+  const [tempSalary, setTempSalary] = useState(salary)
+  const [warningLimit, setWarningLimit] = useState(1000)
+  const [isEditingSalary, setIsEditingSalary] = useState(false)
 
   const handleEdit = () => setIsEditing(true)
   const handleSave = () => {
@@ -15,14 +19,31 @@ const ProfilePage = () => {
     setIsEditing(false)
   }
 
+  const handleSalarySave = () => {
+    const num = parseFloat(tempSalary)
+    if (!isNaN(num)) {
+      setSalary(num)
+      setIsEditingSalary(false)
+    }
+  }
+
   return (
     <div style={styles.page}>
       <div style={styles.header}>
-        <div style={styles.name}>{userName}</div>
+        <div>
+          <div style={styles.name}>{userName}</div>
+          <div style={styles.salary}>Monthly Salary: ₹ {salary}</div>
+        </div>
         <div style={styles.balance}>₹ {balance}</div>
       </div>
 
       <div style={styles.center}>
+        {balance < warningLimit && (
+          <div style={{ color: 'red', fontWeight: 'bold' }}>
+            Warning: Balance below ₹{warningLimit}
+          </div>
+        )}
+
         {isEditing ? (
           <div style={styles.editBox}>
             <input
@@ -35,6 +56,32 @@ const ProfilePage = () => {
         ) : (
           <button style={styles.editBtn} onClick={handleEdit}>Edit Profile</button>
         )}
+
+        {isEditingSalary ? (
+          <div style={styles.salaryBox}>
+            <input
+              type="number"
+              style={styles.input}
+              value={tempSalary}
+              onChange={(e) => setTempSalary(e.target.value)}
+              placeholder="Enter Monthly Salary"
+            />
+            <button style={styles.saveBtn} onClick={handleSalarySave}>Save</button>
+          </div>
+        ) : (
+          <button style={styles.editBtn} onClick={() => setIsEditingSalary(true)}>Edit Salary</button>
+        )}
+
+        <div style={styles.salaryBox}>
+          <input
+            type="number"
+            placeholder="Set Warning Limit"
+            style={styles.input}
+            value={warningLimit}
+            onChange={(e) => setWarningLimit(parseFloat(e.target.value) || 0)}
+          />
+        </div>
+
         <button style={styles.addBtn} onClick={() => navigate('/dashboard')}>Add Transaction</button>
       </div>
 
@@ -65,8 +112,19 @@ const styles = {
     fontSize: '20px',
     fontWeight: 'bold'
   },
-  name: {},
-  balance: {},
+  name: {
+    fontSize: '22px',
+    fontWeight: 'bold'
+  },
+  salary: {
+    fontSize: '16px',
+    fontWeight: 'normal',
+    color: '#003366'
+  },
+  balance: {
+    fontSize: '20px',
+    fontWeight: 'bold'
+  },
   center: {
     display: 'flex',
     flexDirection: 'column',
@@ -132,6 +190,11 @@ const styles = {
     borderRadius: '6px',
     fontSize: '14px',
     cursor: 'pointer'
+  },
+  salaryBox: {
+    display: 'flex',
+    gap: '10px',
+    alignItems: 'center'
   }
 }
 

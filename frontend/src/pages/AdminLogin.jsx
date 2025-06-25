@@ -50,24 +50,29 @@ function AdminLogin() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleAdminLogin = (e) => {
-  e.preventDefault();
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
 
-  if (!adminEmail || !adminPassword) {
-    setMessage("*All fields are required");
-    return;
-  }
+    if (!adminEmail || !adminPassword) {
+      setMessage("*All fields are required");
+      return;
+    }
 
-  // Simulate hardcoded credentials
-  if (adminEmail === "admin@example.com" && adminPassword === "admin123") {
-    localStorage.setItem("isAdmin", "true");
-    localStorage.setItem("adminName", "Admin");
-    navigate("/addashboard");
-  } else {
-    setMessage("Invalid admin credentials");
-  }
-};
+    try {
+      const res = await axios.post("/auth/login", { email: adminEmail, password: adminPassword });
 
+      if (res.data.token && res.data.user && res.data.user.role === "admin") {
+        localStorage.setItem("isAdmin", "true");
+        localStorage.setItem("adminName", res.data.user.username || "Admin");
+        localStorage.setItem("adminToken", res.data.token);
+        navigate("/addashboard");
+      } else {
+        setMessage("Invalid admin credentials");
+      }
+    } catch (error) {
+      setMessage("Login failed. Please try again.");
+    }
+  };
 
   return (
     <div className="login-container" style={styles.page}>

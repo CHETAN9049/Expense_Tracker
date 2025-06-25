@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import NavigationBar from './NavigationBar.jsx'
+import axios from 'axios'
 
 const HistoryPage = () => {
   const [expenses, setExpenses] = useState([])
@@ -9,13 +10,24 @@ const HistoryPage = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('expenses')) || []
-    setExpenses(data)
+    const fetchExpenses = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const userId = localStorage.getItem('userId')
+        const res = await axios.get(`/expenses/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        setExpenses(res.data.expenses || [])
+      } catch (err) {
+        setExpenses([])
+      }
+    }
+    fetchExpenses()
   }, [])
 
   const filtered = expenses.filter(e => {
     const matchesMonth = month ? new Date(e.date).getMonth() + 1 === parseInt(month) : true
-    const matchesCat = category ? e.section === category : true
+    const matchesCat = category ? e.category === category || e.section === category : true
     return matchesMonth && matchesCat
   })
 
@@ -61,7 +73,7 @@ const HistoryPage = () => {
     }
   }
 
-  const allSections = [...new Set(expenses.map(e => e.section))]
+  const allSections = [...new Set(expenses.map(e => e.category || e.section))]
 
   return (
     <div style={styles.container}>
@@ -92,12 +104,12 @@ const HistoryPage = () => {
         </thead>
         <tbody>
           {filtered.map(e => (
-            <tr key={e.id}>
-              <td style={styles.td}>{e.title}</td>
+            <tr key={e._id || e.id}>
+              <td style={styles.td}>{e.title || e.note || ''}</td>
               <td style={styles.td}>₹{e.amount}</td>
-              <td style={styles.td}>{e.date}</td>
-              <td style={styles.td}>{e.section}</td>
-              <td style={styles.td}>{e.notes}</td>
+              <td style={styles.td}>{e.date ? new Date(e.date).toLocaleDateString() : ''}</td>
+              <td style={styles.td}>{e.category || e.section}</td>
+              <td style={styles.td}>{e.notes || e.note || ''}</td>
               <td style={styles.td}><button style={styles.btn} onClick={() => navigate('/dashboard')}>Edit</button></td>
             </tr>
           ))}

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import NavigationBar from './NavigationBar.jsx'
+
 const Dashboard = () => {
   const [sections, setSections] = useState(['General'])
   const [expenses, setExpenses] = useState([])
@@ -7,6 +9,7 @@ const Dashboard = () => {
   const [expenseInput, setExpenseInput] = useState({
     title: '', amount: '', date: '', section: 'General', notes: ''
   })
+  const [message, setMessage] = useState('')
 
   const addSection = () => {
     const name = sectionInput.trim()
@@ -16,16 +19,41 @@ const Dashboard = () => {
     }
   }
 
-  const addExpense = () => {
+  const addExpense = async () => {
     const { title, amount, date, section, notes } = expenseInput
     if (title && amount && date && !isNaN(amount)) {
-      const newExpense = {
-        id: Date.now(), title, amount: parseFloat(amount), date, section, notes
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.post(
+          '/expenses/add',
+          {
+            amount: parseFloat(amount),
+            date,
+            category: section,
+            note: notes
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        )
+        const newExpense = {
+          id: Date.now(),
+          title,
+          amount: parseFloat(amount),
+          date,
+          section,
+          notes
+        }
+        const updated = [...expenses, newExpense]
+        setExpenses(updated)
+        localStorage.setItem('expenses', JSON.stringify(updated))
+        setExpenseInput({ title: '', amount: '', date: '', section, notes: '' })
+        setMessage(res.data.message || 'Expense added!')
+      } catch (err) {
+        setMessage(err.response?.data?.error || 'Failed to add expense')
       }
-      const updated = [...expenses, newExpense]
-      setExpenses(updated)
-      localStorage.setItem('expenses', JSON.stringify(updated))
-      setExpenseInput({ title: '', amount: '', date: '', section, notes: '' })
+    } else {
+      setMessage('Please fill all fields correctly')
     }
   }
 
@@ -63,6 +91,10 @@ const Dashboard = () => {
       border: 'none',
       borderRadius: '5px',
       cursor: 'pointer'
+    },
+    message: {
+      color: 'red',
+      marginTop: '1rem'
     }
   }
 
@@ -81,6 +113,7 @@ const Dashboard = () => {
         </select>
         <input style={styles.input} placeholder="Notes" value={expenseInput.notes} onChange={e => setExpenseInput({ ...expenseInput, notes: e.target.value })} />
         <button style={styles.button} onClick={addExpense}>Add</button>
+        {message && <div style={styles.message}>{message}</div>}
       </div>
       <NavigationBar />
     </div>

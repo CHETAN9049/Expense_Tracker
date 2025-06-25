@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const styles = {
   container: {
@@ -60,11 +61,20 @@ function AdminDashboard() {
   const handleLogout = () => {
     localStorage.removeItem('isAdmin');
     localStorage.removeItem('adminName');
+    localStorage.removeItem('adminToken');
     navigate('/adminlogin');
   };
 
-  const handleViewUsers = () => {
-    navigate('/view-users');
+  const handleViewUsers = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await axios.get('/admin/users', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      navigate('/view-users', { state: { users: res.data.users } });
+    } catch (error) {
+      setMessage("Login failed. Please try again.");
+    }
   };
 
   const handleEdit = () => {

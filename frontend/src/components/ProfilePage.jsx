@@ -1,18 +1,50 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import NavigationBar from './NavigationBar.jsx'
+import axios from 'axios'
 
 const ProfilePage = () => {
   const navigate = useNavigate()
-  const [userName, setUserName] = useState('Anjali Singh')
+  const [userName, setUserName] = useState('')
   const [isEditing, setIsEditing] = useState(false)
   const [tempName, setTempName] = useState(userName)
-  const [balance, setBalance] = useState(5000)
+  const [balance, setBalance] = useState(0)
+  const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token')
+        const res = await axios.get('/user/userProfile', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        setUserName(res.data.user.username)
+        setTempName(res.data.user.username)
+        setBalance(res.data.user.balance || 0)
+      } catch (err) {
+        setMessage('Failed to load profile')
+      }
+    }
+    fetchProfile()
+  }, [])
 
   const handleEdit = () => setIsEditing(true)
-  const handleSave = () => {
-    setUserName(tempName)
-    setIsEditing(false)
+
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await axios.patch(
+        '/user/userProfile',
+        { username: tempName },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setUserName(res.data.user.username)
+      setTempName(res.data.user.username)
+      setIsEditing(false)
+      setMessage('Profile updated!')
+    } catch (err) {
+      setMessage('Failed to update profile')
+    }
   }
 
   return (
@@ -36,6 +68,7 @@ const ProfilePage = () => {
           <button style={styles.editBtn} onClick={handleEdit}>Edit Profile</button>
         )}
         <button style={styles.addBtn} onClick={() => navigate('/dashboard')}>Add Transaction</button>
+        {message && <div style={{ color: 'red', marginTop: 10 }}>{message}</div>}
       </div>
 
       <div style={styles.footer}>

@@ -50,7 +50,7 @@ function ViewUsers() {
   const usersPerPage = 5;
 
   useEffect(() => {
-    axios.get('https://hos-backend.onrender.com/users') // replace with  API
+    axios.get('admin/users') // replace with  API
       .then((res) => setUsers(res.data))
       .catch((err) => console.error('Error fetching users:', err));
   }, []);

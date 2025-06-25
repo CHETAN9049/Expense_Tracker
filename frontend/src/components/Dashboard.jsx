@@ -12,7 +12,8 @@ const Dashboard = () => {
   })
   const [message, setMessage] = useState('')
 
-  const addSection = () => {
+  const addSection = () => 
+    {
     const name = sectionInput.trim()
     if (name && !sections.includes(name)) {
       setSections([...sections, name])

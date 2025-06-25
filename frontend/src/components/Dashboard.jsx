@@ -8,7 +8,8 @@ const Dashboard = () => {
     title: '', amount: '', date: '', section: 'General', notes: ''
   })
 
-  const addSection = () => {
+  const addSection = () => 
+    {
     const name = sectionInput.trim()
     if (name && !sections.includes(name)) {
       setSections([...sections, name])

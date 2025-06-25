@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 
@@ -70,7 +71,7 @@ function Login() {
     }
 
     try {
-      const res = await axios.post("/auth/login", { email, password });
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
 
       if (res.data.token) {
         localStorage.setItem("user", JSON.stringify({ token: res.data.token }));

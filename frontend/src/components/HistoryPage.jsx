@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import NavigationBar from './NavigationBar.jsx'
 import axios from 'axios'
+const API_URL = import.meta.env.VITE_API_URL;
 
 const HistoryPage = () => {
   const [expenses, setExpenses] = useState([])
@@ -14,7 +15,7 @@ const HistoryPage = () => {
       try {
         const token = localStorage.getItem('token')
         const userId = localStorage.getItem('userId')
-        const res = await axios.get(`/expenses/${userId}`, {
+        const res = await axios.get(`${API_URL}/expenses/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         setExpenses(res.data.expenses || [])

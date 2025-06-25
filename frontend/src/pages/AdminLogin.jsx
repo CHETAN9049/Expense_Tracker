@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import "./Login.css"; 
 
@@ -59,7 +60,7 @@ function AdminLogin() {
     }
 
     try {
-      const res = await axios.post("/auth/login", { email: adminEmail, password: adminPassword });
+      const res = await axios.post(`${API_URL}/auth/login`, { email: adminEmail, password: adminPassword });
 
       if (res.data.token && res.data.user && res.data.user.role === "admin") {
         localStorage.setItem("isAdmin", "true");

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const styles = {
   page: {
@@ -60,7 +61,7 @@ function Verify2FA() {
 
     try {
       const userId = localStorage.getItem('pending2FAUserId');
-      const res = await axios.post('/auth/verify-2fa-email', {
+      const res = await axios.post(`${API_URL}/auth/verify-2fa-email`, {
         userId,
         code
       });

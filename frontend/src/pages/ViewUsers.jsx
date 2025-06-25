@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const styles = {
   container: {
@@ -50,7 +51,7 @@ function ViewUsers() {
   const usersPerPage = 5;
 
   useEffect(() => {
-    axios.get('admin/users') // replace with  API
+    axios.get(`${API_URL}admin/users`) // replace with  API
       .then((res) => setUsers(res.data))
       .catch((err) => console.error('Error fetching users:', err));
   }, []);

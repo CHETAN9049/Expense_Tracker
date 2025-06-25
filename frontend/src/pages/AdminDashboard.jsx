@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const styles = {
   container: {
@@ -68,7 +69,7 @@ function AdminDashboard() {
   const handleViewUsers = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const res = await axios.get('/admin/users', {
+      const res = await axios.get(`${API_URL}/admin/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       navigate('/view-users', { state: { users: res.data.users } });

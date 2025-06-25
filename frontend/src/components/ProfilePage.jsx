@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import NavigationBar from './NavigationBar.jsx'
 import axios from 'axios'
+const API_URL = import.meta.env.VITE_API_URL;
 
 const ProfilePage = () => {
   const navigate = useNavigate()
@@ -16,7 +17,7 @@ const ProfilePage = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token')
-        const res = await axios.get('/user/userProfile', {
+        const res = await axios.get(`${API_URL}/user/userProfile`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         setUserName(res.data.user.username)

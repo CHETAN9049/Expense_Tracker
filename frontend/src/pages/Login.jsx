@@ -74,13 +74,29 @@ function Login() {
       const res = await axios.post(`${API_URL}/auth/login`, { email, password });
 
       if (res.data.token) {
-        localStorage.setItem("user", JSON.stringify({ token: res.data.token }));
-        navigate("/verify-2fa"); // or "/dashboard" if no 2FA
+        localStorage.setItem("token", res.data.token);
+        navigate("/dashboard");
+      } else if (res.data.require2FA) {
+        localStorage.setItem("pendingUser", JSON.stringify({ email }));
+        navigate("/verify-2fa");
       } else {
-        setMessage("Invalid credentials");
+        setMessage(res.data.error || "Invalid credentials");
       }
     } catch (error) {
-      setMessage(error.response?.data?.error || "Login failed. Please try again.");
+      console.error("Login error:", error);
+      let msg = "Login failed. Please try again.";
+      if (error.response?.data?.error) {
+        msg =
+          typeof error.response.data.error === "string"
+            ? error.response.data.error
+            : JSON.stringify(error.response.data.error);
+      } else if (error.response?.data?.message) {
+        msg =
+          typeof error.response.data.message === "string"
+            ? error.response.data.message
+            : JSON.stringify(error.response.data.message);
+      }
+      setMessage(msg);
     }
   };
 
@@ -117,7 +133,10 @@ function Login() {
             Login
           </button>
 
-          {message && <div style={styles.message}>{message}</div>}
+          {typeof message === "string" && message && (
+            <div style={styles.message}>{message}</div>
+          )}
+
         </form>
 
         <Link to="/signup">Don't have an account? SignUp</Link>

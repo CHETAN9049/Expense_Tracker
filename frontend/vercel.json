@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    {
+      "source": "/auth/:match*",
+      "destination": "https://backend-zeta-eight-88.vercel.app/auth/:match*"
+    },
+    {
+      "source": "/admin/:match*",
+      "destination": "https://backend-zeta-eight-88.vercel.app/admin/:match*"
+    },
+    {
+      "source": "/user/:match*",
+      "destination": "https://backend-zeta-eight-88.vercel.app/user/:match*"
+    },
+    {
+      "source": "/expenses/:match*",
+      "destination": "https://backend-zeta-eight-88.vercel.app/expenses/:match*"
+    },
+    {
+      "source": "/api/:match*",
+      "destination": "https://backend-zeta-eight-88.vercel.app/api/:match*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
+}

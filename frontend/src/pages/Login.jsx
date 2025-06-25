@@ -70,7 +70,7 @@ function Login() {
     }
 
     try {
-      const res = await axios.post("https://your-api-url.com/login", { email, password });
+      const res = await axios.post("/auth/login", { email, password });
 
       if (res.data.token) {
         localStorage.setItem("user", JSON.stringify({ token: res.data.token }));
@@ -79,7 +79,7 @@ function Login() {
         setMessage("Invalid credentials");
       }
     } catch (error) {
-      setMessage("Login failed. Please try again.");
+      setMessage(error.response?.data?.error || "Login failed. Please try again.");
     }
   };
 

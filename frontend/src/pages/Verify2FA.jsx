@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const styles = {
   page: {
@@ -54,14 +55,24 @@ function Verify2FA() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleVerify = (e) => {
+  const handleVerify = async (e) => {
     e.preventDefault();
 
-    if (code === "123456") { // replace this with API check
-      localStorage.setItem("is2FAVerified", "true");
-      navigate("/dashboard");
-    } else {
-      setError("Invalid code. Try again.");
+    try {
+      const userId = localStorage.getItem('pending2FAUserId');
+      const res = await axios.post('/auth/verify-2fa-email', {
+        userId,
+        code
+      });
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("userId", res.data.user._id || res.data.user.id);
+        navigate("/dashboard");
+      } else {
+        setError("Verification failed. Try again.");
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || "Invalid code. Try again.");
     }
   };
 

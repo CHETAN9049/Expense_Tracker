@@ -32,18 +32,18 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post("https://hos-backend.onrender.com/register", {
-        name,
+      const API_URL = import.meta.env.VITE_API_URL;
+      const response = await axios.post(`${API_URL}/auth/register`, {
+        username: name,
         email,
         password,
       });
 
-      if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify({ token: response.data.token }));
-        navigate("/dashboard");
-      } else {
+      if (response.data.userId) {
         alert("Registered successfully");
         navigate("/login");
+      } else {
+        setErrorMessage("Registration failed. Please try again.");
       }
     } catch (error) {
       if (error.response) {

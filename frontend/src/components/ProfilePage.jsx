@@ -36,7 +36,7 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem('token')
       const res = await axios.patch(
-        '/user/userProfile',
+        `${API_URL}/user/userProfile`,
         { username: tempName },
         { headers: { Authorization: `Bearer ${token}` } }
       )

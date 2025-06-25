@@ -51,9 +51,12 @@ function ViewUsers() {
   const usersPerPage = 5;
 
   useEffect(() => {
-    axios.get(`${API_URL}admin/users`) // replace with  API
-      .then((res) => setUsers(res.data))
-      .catch((err) => console.error('Error fetching users:', err));
+    const token = localStorage.getItem('adminToken');
+    axios.get(`${API_URL}/admin/users`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then((res) => setUsers(res.data.users))
+      .catch((err) => setError(err.response?.data?.error || "Failed to fetch users"));
   }, []);
 
   const filtered = users.filter((user) =>
@@ -114,3 +117,6 @@ function ViewUsers() {
 }
 
 export default ViewUsers;
+
+localStorage.setItem("pendingUserEmail", email);
+const email = localStorage.getItem("pendingUserEmail");

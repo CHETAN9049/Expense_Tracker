@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+const API_URL = import.meta.env.VITE_API_URL;
 import NavigationBar from './NavigationBar.jsx'
 
 const Dashboard = () => {
@@ -25,7 +26,7 @@ const Dashboard = () => {
       try {
         const token = localStorage.getItem('token')
         const res = await axios.post(
-          '/expenses/add',
+          `${API_URL}/expenses/add`,
           {
             amount: parseFloat(amount),
             date,

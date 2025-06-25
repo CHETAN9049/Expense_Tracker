@@ -12,7 +12,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors({ origin: '*' }));
+app.use(cors({
+  origin: 'https://frontend-black-rho-67.vercel.app',
+  credentials: true // if you use cookies
+}));
 
 // Rate limiter for auth routes
 app.use(authLimiter);
